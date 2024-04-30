@@ -36,8 +36,6 @@ void printmatrix(int rows, int cols, float matrix[rows][cols]) {
 }
 
 
-
-// Row Reduction RREF
 /*
  * Takes a row x columns matrix and row reduces it to Reduced Row Echelon Form
  */
@@ -54,14 +52,18 @@ void rowReduce(int rows, int cols, float matrix[rows][cols]) {
             d = matrix[lead][lead];
             m = matrix[r][lead] / matrix[lead][lead];
 
+            // iterate through columns 
             for (int c = 0; c < ncols; c++) {
                 if (r == lead) {
-                    matrix[r][c] /= d;
+                    // divide pivot by divisor to = 1
+                    matrix[r][c] /= d; 
                 } else {
-                    matrix[r][c] -= matrix[lead][c] * m;
+                    // subtract multiple of pivot to make element = 0
+                    matrix[r][c] -= matrix[lead][c] * m; 
                 }
             }
         }
+
         lead++;
         printmatrix(rows, cols, matrix);
     }
