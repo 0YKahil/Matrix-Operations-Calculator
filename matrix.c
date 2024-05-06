@@ -19,11 +19,13 @@
 void parse_matrix() {}
 
 
+
 /*
  * Takes a row x columns matrix 
  * and prints it in the form:   a11 a12 a13
  *                              a21 a22 a23
  *                              a31 a32 a33
+ * 
  */
 void printmatrix(int rows, int cols, float matrix[rows][cols]) {
     for (int i = 0; i < rows; i++) {
@@ -34,7 +36,6 @@ void printmatrix(int rows, int cols, float matrix[rows][cols]) {
     }
     printf("\n");
 }
-
 
 /*
  * Takes a row x columns matrix and row reduces it to Reduced Row Echelon Form
@@ -67,6 +68,10 @@ void rowReduce(int rows, int cols, float matrix[rows][cols]) {
         lead++;
         printmatrix(rows, cols, matrix);
     }
+}
+
+void add() {
+    
 }
 
 int main() {
