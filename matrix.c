@@ -194,9 +194,9 @@ void rowReduce(int rows, int cols, Fraction **matrix) {
 }
 
 /**
- * Takes 2 matrix pointers and adds the matrices A and B
+ * Takes 2 matrix pointers and adds the matrices A and B, storing the new matrix in A
  */
-void addMatrices(int rows, int cols, Fraction **matrixA, Fraction **matrixB, Fraction **result) {
+void addMatrices(int rows, int cols, Fraction **matrixA, Fraction **matrixB) {
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             matrixA[i][j] = addFractions(matrixA[i][j], matrixB[i][j]);
@@ -204,40 +204,66 @@ void addMatrices(int rows, int cols, Fraction **matrixA, Fraction **matrixB, Fra
     }
 }
 
-int main() {
-    int rows = 3, cols = 4; // Statically defined rows and cols
 
-    // Allocate memory for the matrix
+int main() {
+ /**
+  * Small demonstration of the functions and possibilities for now,
+  * since the application is not developed with user input and ui
+  */
+
+    int rows = 3, cols = 4; // statically defined rows and cols for now
+
+    // allocating memory for the matrices
     Fraction **A = (Fraction **)malloc(rows * sizeof(Fraction *));
+    Fraction **B = (Fraction **)malloc(rows * sizeof(Fraction *));
     for (int i = 0; i < rows; i++) {
         A[i] = (Fraction *)malloc(cols * sizeof(Fraction));
+        B[i] = (Fraction *)malloc(cols * sizeof(Fraction));
     }
 
     // Initialize the matrix
-    int init[3][4][2] = {
-        {{5, 1}, {-6, 1}, {-7, 1}, {7, 1}},
-        {{3, 1}, {-2, 1}, {5, 1}, {-17, 1}},
-        {{2, 1}, {4, 1}, {-3, 1}, {29, 1}}
+    int initA[3][3][2] = {
+        {{1, 2}, {2, 3}, {3, 4}},
+        {{4, 5}, {5, 6}, {6, 7}},
+        {{7, 8}, {8, 9}, {9, 10}}
     };
-
-    // Initialize dynamic array with the given values
+    int initB[3][3][2] = {
+        {{1, 2}, {1, 3}, {1, 4}},
+        {{1, 5}, {1, 6}, {1, 7}},
+        {{1, 8}, {1, 9}, {1, 10}}
+    };
+    // initialize dynamic array with the given values
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
-            A[i][j].num = init[i][j][0];
-            A[i][j].den = init[i][j][1];
+            A[i][j].num = initA[i][j][0];
+            A[i][j].den = initA[i][j][1];
+            B[i][j].num = initB[i][j][0];
+            B[i][j].den = initB[i][j][1];
         }
     }
 
+    printf("Adding 2 Matrices: \n");
+    printf("Matrix A: \n");
     printMatrix(rows, cols, A);
-    rowReduce(rows, cols, A);
+    printf("Matrix B: \n");
+    printMatrix(rows, cols, B);
+    // add A and B and store it in A
+    addMatrices(rows, cols, A, B);
 
-    // Free the memory used by the allocated rows
+    printf("\n\nRESULT: \n");
+    // print the result matrix (which is now in A)
+    printMatrix(rows, cols, A);
+
+
+    // free the memory used by the allocated rows
     for (int i = 0; i < rows; i++) {
         free(A[i]);
+        free(B[i]);
     }
 
-    // Free the Matrix
+    // free the Matrices
     free(A);
+    free(B);
 
     return 0;
 }
