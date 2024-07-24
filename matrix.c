@@ -25,7 +25,7 @@ typedef struct {
 } Fraction;
 
 /**
- * Reduced the given fraction f to its lowest
+ * Reduces the given fraction f to its lowest terms
  */
 Fraction reduce(Fraction f);
 
@@ -35,7 +35,7 @@ Fraction reduce(Fraction f);
 Fraction addFractions(Fraction a, Fraction b);
 
 /**
- * subtracts fraction b from fraction a and returns the reduced result
+ * Subtracts fraction b from fraction a and returns the reduced result
  */
 Fraction subFractions(Fraction a, Fraction b);
 
@@ -107,7 +107,10 @@ void printFraction(Fraction f) {
     // Reduce the fraction first
     f = reduce(f);
 
-    if (f.num == f.den) { // x/x = 1
+    // Handle all possible special cases of fractions for better output
+    if (f.den == 0) {
+        printf("Undefined (division by zero)");
+    } else if (f.num == f.den) { // x/x = 1
         printf("1");
     } else if (f.num == 0) { // 0/x = 0
         printf("0");
@@ -138,10 +141,8 @@ int gcd(int a, int b) {
  */
 
 void parse_matrix() {
-    // Todo
+    // TODO: Implement matrix parsing logic
 }
-
-
 
 /*
  * Takes a row x columns 2D array pointer (matrix)
@@ -160,6 +161,7 @@ void printMatrix(int rows, int cols, Fraction **matrix) {
     }
     printf("\n");
 }
+
 /*
  * Takes a row x columns fraction matrix and row reduces it to Reduced Row Echelon Form
  */
@@ -168,19 +170,31 @@ void rowReduce(int rows, int cols, Fraction **matrix) {
 
     while (curr < rows) {
         Fraction d, m;
-        
+
+        // ensure the pivot element is not zero
+        if ((*(matrix + curr) + curr)->num == 0) {
+            // Skip 0 elements since they are already reduced
+            curr++;
+            continue;
+        }
+
         for (int r = 0; r < rows; r++) {
             // calculate divisor and multiplier for this step
             d = *(*(matrix + curr) + curr);
+            if (d.num == 0 || d.den == 0) {
+                // Skip 0 devision
+                continue;
+            }
+
             m = divFractions(*(*(matrix + r) + curr), *(*(matrix + curr) + curr));
 
             // iterate through columns 
             for (int c = 0; c < cols; c++) {
                 if (r == curr) {
-                    // divide pivot by divisor to = 1
+                    // divide pivot by divisor to equal 1
                     *(*(matrix + r) + c) = divFractions(*(*(matrix + r) + c), d);
                 } else {
-                    // subtract multiple of pivot to make element = 0
+                    // subtract multiple of pivot to make element equal 0
                     *(*(matrix + r) + c) = subFractions(*(*(matrix + r) + c), 
                     mulFractions(*(*(matrix + curr) + c), m));
                 }
@@ -193,6 +207,7 @@ void rowReduce(int rows, int cols, Fraction **matrix) {
     }
 }
 
+
 /**
  * Takes 2 matrix pointers and adds the matrices A and B, storing the new matrix in A
  */
@@ -204,14 +219,13 @@ void addMatrices(int rows, int cols, Fraction **matrixA, Fraction **matrixB) {
     }
 }
 
-
 int main() {
- /**
-  * Small demonstration of the functions and possibilities for now,
-  * since the application is not developed with user input and ui
-  */
+    /**
+     * Small demonstration of the functions and possibilities for now,
+     * since the application is not developed with user input and UI
+     */
 
-    int rows = 3, cols = 4; // statically defined rows and cols for now
+    int rows = 3, cols = 3; // statically defined rows and cols for now
 
     // allocating memory for the matrices
     Fraction **A = (Fraction **)malloc(rows * sizeof(Fraction *));
@@ -221,7 +235,7 @@ int main() {
         B[i] = (Fraction *)malloc(cols * sizeof(Fraction));
     }
 
-    // Initialize the matrix
+    // Initialize the matrix with predefined values (to be replaced by user input)
     int initA[3][3][2] = {
         {{1, 2}, {2, 3}, {3, 4}},
         {{4, 5}, {5, 6}, {6, 7}},
@@ -232,7 +246,7 @@ int main() {
         {{1, 5}, {1, 6}, {1, 7}},
         {{1, 8}, {1, 9}, {1, 10}}
     };
-    // initialize dynamic array with the given values
+    // initialize dynamic array with the given values from initA and initB
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             A[i][j].num = initA[i][j][0];
@@ -251,9 +265,15 @@ int main() {
     addMatrices(rows, cols, A, B);
 
     printf("\n\nRESULT: \n");
+
     // print the result matrix (which is now in A)
     printMatrix(rows, cols, A);
 
+    rowReduce(rows, cols, A);
+
+    // Row Reduce
+    printf("\n\nReduced RESULT: \n");
+    printMatrix(rows, cols, A);
 
     // free the memory used by the allocated rows
     for (int i = 0; i < rows; i++) {
